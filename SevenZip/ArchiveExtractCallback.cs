@@ -43,6 +43,9 @@ namespace SevenZip
         private long _bytesWritten;
         private long _bytesWrittenOld;
         private string _directory;
+        private ExtractionHandler _callback;
+
+        private Stream _currentDestinationStream;
 
         /// <summary>
         /// Rate of the done work from [0, 1].
@@ -93,6 +96,23 @@ namespace SevenZip
             Init(archive, directory, filesCount, directoryStructure, actualIndexes, extractor);
         }
 
+
+
+        public ArchiveExtractCallback(IInArchive archive, ExtractionHandler callback, int filesCount,
+           List<uint> actualIndexes, string password, SevenZipExtractor extractor)
+           : base(password)
+        {
+            Init(archive, callback, filesCount, actualIndexes, extractor);
+        }
+
+
+        public ArchiveExtractCallback(IInArchive archive, ExtractionHandler callback, int filesCount,
+           List<uint> actualIndexes, SevenZipExtractor extractor)
+        {
+            Init(archive, callback, filesCount, actualIndexes, extractor);
+        }
+
+
         /// <summary>
         /// Initializes a new instance of the ArchiveExtractCallback class
         /// </summary>
@@ -135,6 +155,16 @@ namespace SevenZip
                 _directory += Path.DirectorySeparatorChar;
             }
         }
+
+
+        private void Init(IInArchive archive, ExtractionHandler callback, int filesCount,
+           List<uint> actualIndexes, SevenZipExtractor extractor)
+        {
+            CommonInit(archive, filesCount, extractor);
+            _callback = callback;
+            _actualIndexes = actualIndexes;
+        }
+
 
         private void Init(IInArchive archive, Stream stream, int filesCount, uint fileIndex, SevenZipExtractor extractor)
         {
@@ -285,7 +315,35 @@ namespace SevenZip
             if (askExtractMode == AskMode.Extract)
             {
                 var fileName = _directory;
-                if (!_fileIndex.HasValue)
+                if (_callback != null)
+                {
+                    _currentDestinationStream = null;
+                    if (_actualIndexes == null || _actualIndexes.Contains(index))
+                    {
+                        var data = new PropVariant();
+                        _archive.GetProperty(index, ItemPropId.IsDirectory, ref data);
+
+                        if (!NativeMethods.SafeCast(data, false))
+                        {
+                            var stream = _callback.GetStreamForWriting((int)index);
+                            if (stream == null) outStream = _fakeStream;
+                            else
+                            {
+                                _currentDestinationStream = stream;
+                                outStream = new OutStreamWrapper(stream, true);
+                            }
+                        }
+                        else
+                        {
+                            outStream = _fakeStream;
+                        }
+                    }
+                    else
+                    {
+                        outStream = _fakeStream;
+                    }
+                }
+                else if (!_fileIndex.HasValue)
                 {
                     #region Extraction to a file
 
@@ -318,6 +376,7 @@ namespace SevenZip
                         #endregion
 
                         fileName = Path.Combine(_directory, _directoryStructure? entryName : Path.GetFileName(entryName));
+                        Console.WriteLine(Path.GetFileName(fileName));
                         _archive.GetProperty(index, ItemPropId.IsDirectory, ref data);
                         try
                         {
@@ -491,6 +550,9 @@ namespace SevenZip
                 var iea = new FileInfoEventArgs(
                     _extractor.ArchiveFileData[_currentIndex], PercentDoneEventArgs.ProducePercentDone(_doneRate));                
                 OnFileExtractionFinished(iea);
+                if (_callback != null && _currentDestinationStream != null)
+                    _callback.OnCompleted(_currentIndex, _currentDestinationStream, operationResult);
+                _currentDestinationStream = null;
                 if (iea.Cancel)
                 {
                     Canceled = true;

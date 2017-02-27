@@ -691,6 +691,17 @@ namespace SevenZip
             return aec;
         }
 
+
+        private ArchiveExtractCallback GetArchiveExtractCallback(ExtractionHandler callback, int filesCount,
+                                                         List<uint> actualIndexes)
+        {
+            var aec = String.IsNullOrEmpty(Password)
+                      ? new ArchiveExtractCallback(_archive, callback, filesCount, actualIndexes, this)
+                      : new ArchiveExtractCallback(_archive, callback, filesCount, actualIndexes, Password, this);
+            ArchiveExtractCallbackCommonInit(aec);
+            return aec;
+        }
+
         /// <summary>
         /// Gets the IArchiveExtractCallback callback
         /// </summary>
@@ -1110,6 +1121,20 @@ namespace SevenZip
         /// <param name="directory">Directory where the files are to be unpacked.</param>
         public void ExtractFiles(string directory, params int[] indexes)
         {
+            ExtractFilesInternal(null, directory, indexes);
+        }
+
+        
+
+        public void ExtractFiles(ExtractionHandler extractionCallback, params int[] indexes)
+        {
+            ExtractFilesInternal(extractionCallback, null, indexes);
+        }
+
+
+
+        private void ExtractFilesInternal(ExtractionHandler extractionCallback, string directory, params int[] indexes)
+        {
             DisposedCheck();
             ClearExceptions();
             if (!CheckIndexes(indexes))
@@ -1177,7 +1202,9 @@ namespace SevenZip
                     }
                     try
                     {
-                        using (var aec = GetArchiveExtractCallback(directory, (int) _filesCount, origIndexes))
+                        using (var aec = extractionCallback != null 
+                            ? GetArchiveExtractCallback(extractionCallback, (int) _filesCount, origIndexes)
+                            : GetArchiveExtractCallback(directory, (int) _filesCount, origIndexes))
                         {
                             try
                             {
@@ -1446,4 +1473,11 @@ namespace SevenZip
 
         #endregion
     }
+
+    public class ExtractionHandler
+    {
+        public Func<int, Stream> GetStreamForWriting { get; set; }
+        public Action<int, Stream, OperationResult> OnCompleted { get; set; }
+    }
+
 }
