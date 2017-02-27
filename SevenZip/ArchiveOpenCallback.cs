@@ -58,7 +58,7 @@ namespace SevenZip
             {
                 _fileInfo = new FileInfo(fileName);
                 _volumeFileNames.Add(fileName);
-                if (fileName.EndsWith("001"))
+                if (fileName.EndsWith(".001"))
                 {
                     int index = 2;
                     var baseName = fileName.Substring(0, fileName.Length - 3);
