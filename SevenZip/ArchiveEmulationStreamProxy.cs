@@ -93,9 +93,17 @@ namespace SevenZip
             Source.Dispose();
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                Source.Dispose();
+        }
+
+#if !NETSTANDARD
         public override void Close()
         {
             Source.Close();
         }
+#endif
     }
 }

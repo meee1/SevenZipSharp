@@ -48,7 +48,7 @@ namespace SevenZip.Sdk.Buffer
 
         public void CloseStream()
         {
-            m_Stream.Close();
+            m_Stream.Dispose();
         }
 
         public void ReleaseStream()

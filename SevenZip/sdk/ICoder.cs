@@ -23,7 +23,12 @@ namespace SevenZip.Sdk
     /// The exception that is thrown when an error in input stream occurs during decoding.
     /// </summary>
     [Serializable]
-    internal class DataErrorException : ApplicationException
+    internal class DataErrorException
+#if NETSTANDARD
+        : Exception
+#else
+        : ApplicationException
+#endif
     {
         public DataErrorException() : base("Data Error") {}
     }
@@ -32,7 +37,12 @@ namespace SevenZip.Sdk
     /// The exception that is thrown when the value of an argument is outside the allowable range.
     /// </summary>
     [Serializable]
-    internal class InvalidParamException : ApplicationException
+    internal class InvalidParamException
+#if NETSTANDARD
+        : Exception
+#else
+        : ApplicationException
+#endif
     {
         public InvalidParamException() : base("Invalid Parameter") {}
     }

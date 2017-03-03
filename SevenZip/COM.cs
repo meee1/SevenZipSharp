@@ -19,7 +19,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+#if !NETSTANDARD
 using System.Security.Permissions;
+#endif
 #if !WINCE
 using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
 #elif WINCE
@@ -28,7 +30,7 @@ using FILETIME=OpenNETCF.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace SevenZip
 {
-    #if UNMANAGED
+#if UNMANAGED
 
     /// <summary>
     /// The structure to fix x64 and x32 variant size mismatch.
@@ -283,7 +285,7 @@ namespace SevenZip
         {
             get
             {
-#if !WINCE
+#if !WINCE && !NETSTANDARD
                 var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
                 sp.Demand();
 #endif
@@ -687,7 +689,7 @@ namespace SevenZip
         /// PropId string names
         /// </summary>
         public static readonly Dictionary<ItemPropId, string> PropIdNames =
-        #region Initialization
+#region Initialization
             new Dictionary<ItemPropId, string>(46)
             {
                 {ItemPropId.Path, "Path"},
@@ -757,7 +759,7 @@ namespace SevenZip
                 {ItemPropId.FreeSpace, "Free Space"},
                 {ItemPropId.ClusterSize, "Cluster Size"}
             };
-        #endregion
+#endregion
     }
 
     /// <summary>

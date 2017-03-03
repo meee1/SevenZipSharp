@@ -18,13 +18,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-#if !WINCE
+using System.Reflection;
+#if !WINCE && !NETSTANDARD
 using System.Runtime.Remoting.Messaging;
 #endif
 #if DOTNET20
 using System.Threading;
 #else
-using System.Windows.Threading;
 #endif
 #if MONO
 using SevenZip.Mono.COM;
@@ -56,7 +56,10 @@ namespace SevenZip
     /// <summary>
     /// SevenZip Extractor/Compressor base class. Implements Password string, ReportErrors flag.
     /// </summary>
-    public abstract class SevenZipBase : MarshalByRefObject
+    public abstract class SevenZipBase
+#if !NETSTANDARD
+        : MarshalByRefObject
+#endif
     {
         private readonly string _password;
         private readonly bool _reportErrors;
@@ -76,8 +79,13 @@ namespace SevenZip
         /// <param name="ar">IAsyncResult instance.</param>
         internal static void AsyncCallbackMethod(IAsyncResult ar)
         {
+#if NETSTANDARD
+            var asyncDelegate = ar.GetType().GetRuntimeProperty("AsyncDelegate").GetValue(ar);
+            asyncDelegate.GetType().GetTypeInfo().GetDeclaredMethod("EndInvoke").Invoke(asyncDelegate, new[] { ar });
+#else
             var result = (AsyncResult)ar;
             result.AsyncDelegate.GetType().GetMethod("EndInvoke").Invoke(result.AsyncDelegate, new[] { ar });
+#endif
             ((SevenZipBase)ar.AsyncState).ReleaseContext();
         }
 
@@ -204,9 +212,9 @@ Dispatcher == null
             }
         }
 #endif
-        /// <summary>
-        /// Gets the unique identificator of this SevenZipBase instance.
-        /// </summary>
+            /// <summary>
+            /// Gets the unique identificator of this SevenZipBase instance.
+            /// </summary>
         public int UniqueID
         {
             get
@@ -237,7 +245,7 @@ Dispatcher == null
             }
         }
 
-        #region Constructors
+    #region Constructors
         /// <summary>
         /// Initializes a new instance of the SevenZipBase class.
         /// </summary>
@@ -262,7 +270,7 @@ Dispatcher == null
             _reportErrors = true;
             _uniqueID = GetUniqueID();
         }
-        #endregion
+    #endregion
 
         /// <summary>
         /// Removes the UniqueID from the list.
@@ -447,7 +455,10 @@ Dispatcher == null
         }
     }
 
-    internal class CallbackBase : MarshalByRefObject
+    internal class CallbackBase
+#if !NETSTANDARD
+        : MarshalByRefObject
+#endif
     {
         private readonly string _password;
         private readonly bool _reportErrors;
@@ -456,7 +467,7 @@ Dispatcher == null
         /// </summary>
         private readonly List<Exception> _exceptions = new List<Exception>();
 
-        #region Constructors
+    #region Constructors
         /// <summary>
         /// Initializes a new instance of the CallbackBase class.
         /// </summary>
@@ -479,7 +490,7 @@ Dispatcher == null
             _password = password;
             _reportErrors = true;
         }
-        #endregion
+    #endregion
 
         /// <summary>
         /// Gets or sets the archive password

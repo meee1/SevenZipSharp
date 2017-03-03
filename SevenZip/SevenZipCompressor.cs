@@ -24,7 +24,7 @@ using System.Threading;
 using System.Linq;
 #endif
 using System.Runtime.InteropServices;
-#if !WINCE
+#if !WINCE && !NETSTANDARD
 using System.Security.Permissions;
 #endif
 using SevenZip.Sdk;
@@ -281,7 +281,7 @@ namespace SevenZip
                     }
                     var names = new List<IntPtr>(2 + CustomParameters.Count);
                     var values = new List<PropVariant>(2 + CustomParameters.Count);
-#if !WINCE
+#if !WINCE && !NETSTANDARD
                     var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
                     sp.Demand();
 #endif

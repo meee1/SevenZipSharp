@@ -15,7 +15,7 @@
 */
 
 using System;
-#if !WINCE
+#if !WINCE && !NETSTANDARD
 using System.Runtime.Serialization;
 #endif
 
@@ -71,7 +71,7 @@ namespace SevenZip
         /// <param name="inner">Inner exception occured</param>
         public SevenZipException(string defaultMessage, Exception inner)
             : base(defaultMessage, inner) {}
-#if !WINCE
+#if !WINCE && !NETSTANDARD
         /// <summary>
         /// Initializes a new instance of the SevenZipException class
         /// </summary>
@@ -113,7 +113,7 @@ namespace SevenZip
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public ExtractionFailedException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+#if !WINCE && !NETSTANDARD
         /// <summary>
         /// Initializes a new instance of the ExtractionFailedException class
         /// </summary>
@@ -155,7 +155,7 @@ namespace SevenZip
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public CompressionFailedException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+#if !WINCE && !NETSTANDARD
         /// <summary>
         /// Initializes a new instance of the CompressionFailedException class
         /// </summary>
@@ -197,7 +197,7 @@ namespace SevenZip
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public LzmaException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+#if !WINCE && !NETSTANDARD
         /// <summary>
         /// Initializes a new instance of the LzmaException class
         /// </summary>
@@ -242,7 +242,7 @@ namespace SevenZip
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public SevenZipArchiveException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+#if !WINCE && !NETSTANDARD
         /// <summary>
         /// Initializes a new instance of the SevenZipArchiveException class
         /// </summary>
@@ -282,7 +282,7 @@ namespace SevenZip
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public SevenZipInvalidFileNamesException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+#if !WINCE && !NETSTANDARD
         /// <summary>
         /// Initializes a new instance of the SevenZipInvalidFileNamesException class
         /// </summary>
@@ -325,7 +325,7 @@ namespace SevenZip
         /// <param name="inner">Inner exception occured</param>
         public SevenZipCompressionFailedException(string message, Exception inner)
             : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+#if !WINCE && !NETSTANDARD
         /// <summary>
         /// Initializes a new instance of the SevenZipCompressionFailedException class
         /// </summary>
@@ -366,7 +366,7 @@ namespace SevenZip
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public SevenZipExtractionFailedException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+#if !WINCE && !NETSTANDARD
         /// <summary>
         /// Initializes a new instance of the SevenZipExtractionFailedException class
         /// </summary>
@@ -406,7 +406,7 @@ namespace SevenZip
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public SevenZipLibraryException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) {}
-#if !WINCE
+#if !WINCE && !NETSTANDARD
         /// <summary>
         /// Initializes a new instance of the SevenZipLibraryException class
         /// </summary>
@@ -449,7 +449,7 @@ namespace SevenZip
         /// <param name="message">Additional detailed message</param>
         /// <param name="inner">Inner exception occured</param>
         public SevenZipSfxValidationException(string message, Exception inner) : base(DefaultMessage, message, inner) {}
-#if !WINCE
+#if !WINCE && !NETSTANDARD
         /// <summary>
         /// Initializes a new instance of the SevenZipSfxValidationException class
         /// </summary>

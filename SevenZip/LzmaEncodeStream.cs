@@ -232,7 +232,7 @@ namespace SevenZip
                 if (disposing)
                 {
                     Flush();
-                    _buffer.Close();
+                    _buffer.Dispose();
                     if (_ownOutput)
                     {
                         _output.Dispose();
