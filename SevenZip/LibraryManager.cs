@@ -218,11 +218,11 @@ namespace SevenZip
             }
         }
 
-        static readonly string Namespace = typeof(SevenZipLibraryManager).GetTypeInfo().Assembly.GetManifestResourceNames()[0].Split('.')[0];
+        //static readonly string Namespace = typeof(SevenZipLibraryManager).GetTypeInfo().Assembly.GetManifestResourceNames()[0].Split('.')[0];
 
         private static string GetResourceString(string str)
         {
-            return Namespace + ".arch." + str;
+            return "Namespace" + ".arch." + str;
         }
 
         private static bool ExtractionBenchmark(string archiveFileName, Stream outStream,
