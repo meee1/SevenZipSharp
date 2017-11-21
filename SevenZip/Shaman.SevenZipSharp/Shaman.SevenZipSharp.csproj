@@ -14,6 +14,8 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\SevenZip.snk</AssemblyOriginatorKeyFile>
     <DefineConstants>$(DefineConstants),UNMANAGED, COMPRESS, LZMA_STREAM, DOTNET20</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
     <Description>SevenZipSharp for netstandard and a few bug fixes.</Description>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
